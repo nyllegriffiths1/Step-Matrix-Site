@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step Matrix - Cyberpunk Fitness Tracker</title>
+    <meta name="description" content="Transform your daily walks into epic cyberpunk adventures. Level up your fitness with Step Matrix - the ultimate gamified step tracking app.">
+    
+    <!-- Cyberpunk styling -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Cyberpunk grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #00ffff;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #00ffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: #ff00ff;
+            border: 1px solid #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #ffffff;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+            border-color: #ff00ff;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* App Store Section */
+        .app-store {
+            padding: 5rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+        }
+
+        .app-store-badge {
+            display: inline-block;
+            margin: 1rem;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .app-store-badge:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Support Section */
+        .support {
+            padding: 5rem 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .support-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .support-card {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border: 1px solid #ff00ff;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .support-card h3 {
+            color: #ff00ff;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 1px solid #00ffff;
+        }
+
+        .contact-info h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info a {
+            color: #ff00ff;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        /* FAQ */
+        .faq-item {
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .faq-question {
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-answer {
+            color: #ffffff;
+            padding-left: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid #00ffff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glitch effect */
+        .glitch {
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translateX(0); }
+            10% { transform: translateX(-2px) skew(-5deg); }
+            20% { transform: translateX(2px) skew(5deg); }
+            30% { transform: translateX(-1px); }
+            40% { transform: translateX(1px); }
+            50% { transform: translateX(-2px); }
+            60% { transform: translateX(2px); }
+            70% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+            90% { transform: translateX(-2px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo glitch">STEP MATRIX</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#download">Download</a></li>
+                <li><a href="#support">Support</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>STEP MATRIX</h1>
+                <p>Transform your daily walks into epic cyberpunk adventures</p>
+                <a href="#download" class="cta-button">Enter the Matrix</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Level Up Your Fitness</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎮</span>
+                    <h3>XP & Leveling System</h3>
+                    <p>Earn 1 XP per step and level up as you stay active. Every step brings you closer to digital mastery.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3>Cyberpunk Achievements</h3>
+                    <p>Unlock legendary status with cyberpunk-themed achievements. From Data Walker to Digital God.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📱</span>
+                    <h3>Daily Quests</h3>
+                    <p>Complete cyber missions for bonus XP. Morning boot sequences, neural link challenges, and more.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>Health Integration</h3>
+                    <p>Track steps, distance, flights climbed, and calories with seamless Apple Health integration.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔥</span>
+                    <h3>Streak Tracking</h3>
+                    <p>Maintain your cyber-warrior status with daily streaks. Build neural links through consistency.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Goal Setting</h3>
+                    <p>Customize your daily targets and watch beautiful progress visualizations in cyberpunk style.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="app-store">
+        <div class="container">
+            <h2 class="section-title">Download Step Matrix</h2>
+            <p style="margin-bottom: 2rem; font-size: 1.2rem;">Available on the App Store - Join the cyberpunk fitness revolution!</p>
+            <a href="#" class="app-store-badge">📱 Coming Soon to App Store</a>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section id="support" class="support">
+        <div class="container">
+            <div class="support-content">
+                <h2 class="section-title">Support</h2>
+                <p>Need help with Step Matrix? We're here to help you navigate the cyberpunk fitness universe!</p>
+
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p><strong>Email:</strong> <a href="mailto:support@stepmatrix.app">support@stepmatrix.app</a></p>
+                    <p><strong>Response Time:</strong> Usually within 24 hours</p>
+                    <p>Please include your device model and iOS version when contacting us.</p>
+                </div>
+
+                <div class="support-grid">
+                    <div class="support-card">
+                        <h3>Bug Reports</h3>
+                        <p>Found a glitch in the matrix? Report bugs and we'll patch them faster than you can say "cyberpunk".</p>
+                    </div>
+                    <div class="support-card">
+                        <h3>Feature Requests</h3>
+                        <p>Have ideas for new cyber-enhancements? We love hearing from our fellow digital warriors.</p>
+                    </div>
+                    <div class="support-card">
+                        <h3>Privacy & Data</h3>
+                        <p>Questions about your health data? All information stays secure on your device - no data collection.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 3rem; text-align: left; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    <h3 style="color: #00ffff; margin-bottom: 1.5rem; text-align: center;">Frequently Asked Questions</h3>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">Q: How does the XP system work?</div>
+                        <div class="faq-answer">A: You earn 1 XP for every step you take. Level up every 5,000 XP to unlock new achievements and features.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q: Is my health data safe?</div>
+                        <div class="faq-answer">A: Absolutely! All your health data stays on your device. We don't collect, store, or share any personal information.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q: Do I need an Apple Watch?</div>
+                        <div class="faq-answer">A: No! Step Matrix works perfectly with just your iPhone using the built-in motion sensors.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q: Can I export my data?</div>
+                        <div class="faq-answer">A: Yes! Your data integrates with Apple Health, so you can export it anytime through the Health app.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Q: What happens if I miss a day?</div>
+                        <div class="faq-answer">A: Your streak resets, but your total XP and achievements remain. The cyberpunk universe is forgiving!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Step Matrix. All rights reserved. | <a href="mailto:privacy@stepmatrix.app" style="color: #00ffff;">Privacy Policy</a></p>
+            <p style="margin-top: 0.5rem; color: #666;">Your health data stays private and secure on your device.</p>
+        </div>
+    </footer>
+
+    <!-- Smooth scrolling -->
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Random glitch effect on logo
+            const logo = document.querySelector('.logo');
+            setInterval(() => {
+                if (Math.random() < 0.1) {
+                    logo.classList.add('glitch');
+                    setTimeout(() => logo.classList.remove('glitch'), 500);
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
